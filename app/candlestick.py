@@ -39,7 +39,7 @@ if __name__ == '__main__':
                         id="stock-filter",
                         options=[
                             {"label": stock, "value": stock}
-                            for stock in os.listdir('data')
+                            for stock in os.listdir(defaultDirectory)
                         ],
                         value=defaultStock,
                         clearable=False,
