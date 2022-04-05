@@ -1,8 +1,11 @@
-from dash import Dash, html, dash_table, dcc
+from dash import Dash, html, dash_table, dcc, Output, Input
 from plotly import express, graph_objects, subplots
 import pandas
+import os
 
-FILENAME = 'data/C2PU.SI_1d_2022-04-05.csv'
+defaultStock = os.listdir('data')[0]
+defaultFileName = os.listdir(f'data/{defaultStock}')[0]
+FILENAME = f'data/{defaultStock}/{defaultFileName}' 
 df = pandas.read_csv(FILENAME)
 
 if __name__ == '__main__':
@@ -21,9 +24,35 @@ if __name__ == '__main__':
 
     if 1:
         app.layout = html.Div(children = [
-        html.Div(children = [
-                dcc.Graph(id=f'img_1', figure=img_candlestick, style={'height': 1500}),
-                dcc.Graph(id=f'img_2', figure=img_volume, style={'height': 500})
+            html.Div(children = [
+                html.Div(children=[
+                    html.Div(children="Stock Name", className="header-title"),
+                    dcc.Dropdown(
+                        id="stock-filter",
+                        options=[
+                            {"label": stock, "value": stock}
+                            for stock in os.listdir('data')
+                        ],
+                        value=defaultStock,
+                        clearable=False,
+                        className='dropdown-1'
+                    ),
+                ]),
+                html.Div(children=[
+                    html.Div(children="Date", className="header-title"),
+                    dcc.Dropdown(
+                        id="date-filter",
+                        # options=[{"label": defaultFileName, "value": defaultFileName}],
+                        value=defaultFileName,
+                        clearable=False,
+                        className='dropdown'
+                    ),
+                ])
+            # ], style={'display': 'flex', 'justify-content': 'space-evenly'}),
+            ], className="menu"),
+            html.Div(children = [
+                dcc.Graph(id=f'img_1', figure=img_candlestick, style={'height': 750}),
+                dcc.Graph(id=f'img_2', figure=img_volume, style={'height': 250})
             ])
         ])
     else:
@@ -41,4 +70,31 @@ if __name__ == '__main__':
             ])
         ])
         
+    @app.callback(
+        [Output("date-filter", "options"), Output("date-filter", "value")],
+        Input("stock-filter", "value")
+    )
+    def updateDateFilter(stock):
+        return [{"label": date, "value": date} for date in os.listdir(f'data/{stock}')], os.listdir(f'data/{stock}')[0]
+
+    @app.callback(
+        [Output("img_1", "figure"), Output("img_2", "figure")],
+        Input("date-filter", "value")
+    )
+    def updatePlot(file):
+        filePath = f'data/{file.split("_")[0]}/{file}'
+        df = pandas.read_csv(filePath)
+        
+        img_candlestick = graph_objects.Figure(data=[graph_objects.Candlestick(
+            x=df['datetime'],
+            open=df['open'],
+            high=df['high'],
+            low=df['low'],
+            close=df['close']
+        )])
+        img_candlestick.update_layout(xaxis_rangeslider_visible=False)
+        img_volume = express.line(df, x='datetime', y='volume')
+
+        return img_candlestick, img_volume
+
     app.run_server(debug=True, host='0.0.0.0', port=8008)

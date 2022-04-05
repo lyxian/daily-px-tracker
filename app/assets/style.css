@@ -1,0 +1,26 @@
+.header-title {
+  /* color: #ffffff; */
+  /* font-size: 48px; */
+  font-weight: bold;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.dropdown {
+  /* max-width: auto; */
+  width: 250px;
+}
+
+.dropdown-1 {
+  /* max-width: auto; */
+  width: 100px;
+}
+
+.menu {
+  width: 100%;
+  text-align: left;
+  /* width: 40%; */
+  display: flex;
+  justify-content: space-evenly;
+}
+
