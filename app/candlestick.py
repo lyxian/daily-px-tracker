@@ -1,11 +1,19 @@
 from dash import Dash, html, dash_table, dcc, Output, Input
 from plotly import express, graph_objects, subplots
 import pandas
+import sys
 import os
 
-defaultStock = os.listdir('data')[0]
-defaultFileName = os.listdir(f'data/{defaultStock}')[0]
-FILENAME = f'data/{defaultStock}/{defaultFileName}' 
+if len(sys.argv) == 2:
+    MARKET = sys.argv[1]
+else:
+    print('Please input market as first input..')
+    sys.exit()
+
+defaultDirectory = f'data/{MARKET}'
+defaultStock = os.listdir(f'{defaultDirectory}')[0]
+defaultFileName = os.listdir(f'{defaultDirectory}/{defaultStock}')[0]
+FILENAME = f'{defaultDirectory}/{defaultStock}/{defaultFileName}' 
 df = pandas.read_csv(FILENAME)
 
 if __name__ == '__main__':
@@ -75,14 +83,14 @@ if __name__ == '__main__':
         Input("stock-filter", "value")
     )
     def updateDateFilter(stock):
-        return [{"label": date, "value": date} for date in os.listdir(f'data/{stock}')], os.listdir(f'data/{stock}')[0]
+        return [{"label": date, "value": date} for date in os.listdir(f'{defaultDirectory}/{stock}')], os.listdir(f'{defaultDirectory}/{stock}')[0]
 
     @app.callback(
         [Output("img_1", "figure"), Output("img_2", "figure")],
         Input("date-filter", "value")
     )
     def updatePlot(file):
-        filePath = f'data/{file.split("_")[0]}/{file}'
+        filePath = f'{defaultDirectory}/{file.split("_")[0]}/{file}'
         df = pandas.read_csv(filePath)
         
         img_candlestick = graph_objects.Figure(data=[graph_objects.Candlestick(

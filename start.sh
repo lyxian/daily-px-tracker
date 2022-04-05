@@ -2,8 +2,16 @@
 
 cd app
 
-if [ ! -d data ]; then
-mkdir data
+echo -n "Which market (us/sg): "
+read market
+
+if [[ `echo $market | grep -v "us|sg"` ]]; then
+echo "Market $market is not configured, aborting.."
+exit 1
 fi
 
-python multi.py `cat stocks`
+if [ ! -d data/$market ]; then
+mkdir --parents data/$market
+fi
+
+python multi.py $market `cat stocks-$market`
