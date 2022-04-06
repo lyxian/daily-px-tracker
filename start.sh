@@ -15,3 +15,5 @@ mkdir --parents data/$market
 fi
 
 python multi.py $market `cat stocks-$market`
+
+python candlestick.py $market

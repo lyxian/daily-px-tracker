@@ -30,7 +30,7 @@ for stock in STOCKS:
 
     df = pandas.DataFrame(d, index=datetimes).tz_convert('Asia/Singapore')
     df.index = df.index.strftime(DT_FORMAT)
-    FILENAME = f'data/{MARKET}/{stock}/{stock}_{df.index[0].split()[0]}'
+    FILENAME = f'data/{MARKET}/{stock}/{df.index[0].split()[0]}'
 
     # Clean Table
     floatColumns = ['open', 'close', 'low', 'high']

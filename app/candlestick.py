@@ -87,10 +87,10 @@ if __name__ == '__main__':
 
     @app.callback(
         [Output("img_1", "figure"), Output("img_2", "figure")],
-        Input("date-filter", "value")
+        [Input("stock-filter", "value"), Input("date-filter", "value")]
     )
-    def updatePlot(file):
-        filePath = f'{defaultDirectory}/{file.split("_")[0]}/{file}'
+    def updatePlot(stock, date):
+        filePath = f'{defaultDirectory}/{stock}/{date}'
         df = pandas.read_csv(filePath)
         
         img_candlestick = graph_objects.Figure(data=[graph_objects.Candlestick(
