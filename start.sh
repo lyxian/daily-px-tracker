@@ -14,6 +14,6 @@ if [ ! -d data/$market ]; then
 mkdir --parents data/$market
 fi
 
-python multi.py $market `cat stocks-$market`
+python extract.py $market `cat stocks-$market`
 
-python candlestick.py $market
+python app.py $market
