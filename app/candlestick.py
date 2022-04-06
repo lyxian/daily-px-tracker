@@ -79,11 +79,10 @@ if __name__ == '__main__':
         ])
         
     @app.callback(
-        [Output("date-filter", "options"), Output("date-filter", "value")],
-        Input("stock-filter", "value")
+        Output("date-filter", "options"), Input("stock-filter", "value")
     )
     def updateDateFilter(stock):
-        return [{"label": date, "value": date} for date in os.listdir(f'{defaultDirectory}/{stock}')], os.listdir(f'{defaultDirectory}/{stock}')[0]
+        return [{"label": date, "value": date} for date in os.listdir(f'{defaultDirectory}/{stock}')]
 
     @app.callback(
         [Output("img_1", "figure"), Output("img_2", "figure")],
