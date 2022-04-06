@@ -51,10 +51,6 @@ class yfDataReader():
 
         return pandas.concat(dfs, keys=tickers, names=['ticker','date'])
 
-import pendulum
-import requests
-import json
-
 class yfQuoteReader():
     def __init__(self, interval='60m'):
         self.url = 'https://query1.finance.yahoo.com/v8/finance/chart/{}'

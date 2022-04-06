@@ -12,15 +12,31 @@ Goals:
 # V1
 
 - description :
-  - scrap every minute stock prices per run (daily)
-    - run shell script with stocks list
-  - attach to database or csv
-  - .
-  - dashboard
+  - usage
+    - run shell script with stocks list to scrap every minute stock prices per run (daily)
+  - data management
+    - write to csv
+  - dashboard (v1b)
     - add dropdown list to select stock/folder, day for plotting
 - requirement :
   - .
 
-##Packages (list required packages & run .scripts/python-pip.sh)
+# V2
 
+- description :
+  - usage
+    - only scrap if market close time is found
+  - data management
+    - migrate to MongoDB
+  - dashboard
+    - .
+- requirement :
+  - .
+
+##Packages (list required packages & run .scripts/python-pip.sh)
+dash
+plotly
+pandas
+pendulum
+requests
 ##Packages
