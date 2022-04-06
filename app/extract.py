@@ -6,18 +6,15 @@ import os
 
 from dataReader import yfQuoteReader
 
-if len(sys.argv) >= 3:
-    MARKET = sys.argv[1]
-    STOCKS = sys.argv[2:]
-else:
-    print('Please input market as first input and stock as second input..')
-    sys.exit()
+INTERVAL = '1m'
+DT_FORMAT = '%Y-%m-%d %H:%M'
+END_TIMES = {
+    'us': '04:00',
+    'sg': '17:00'
+}
 
-for stock in STOCKS:
-    INTERVAL = '1m'
-    DT_FORMAT = '%Y-%m-%d %H:%M'
-
-    data = yfQuoteReader(interval=INTERVAL).getDataPoints(stock)
+def extractStockPrice(market, stock, saveCSV, interval=INTERVAL, dt_format=DT_FORMAT):
+    data = yfQuoteReader(interval=interval).getDataPoints(stock)
 
     _ = ['open', 'close', 'low', 'high', 'volume']
     timestamp = data['chart']['result'][0]['timestamp']
@@ -29,8 +26,8 @@ for stock in STOCKS:
         d[column] = indicators[column]
 
     df = pandas.DataFrame(d, index=datetimes).tz_convert('Asia/Singapore')
-    df.index = df.index.strftime(DT_FORMAT)
-    FILENAME = f'data/{MARKET}/{stock}/{df.index[0].split()[0]}'
+    df.index = df.index.strftime(dt_format)
+    FILENAME = f'data/{market}/{stock}/{df.index[0].split()[0]}'
 
     # Clean Table
     floatColumns = ['open', 'close', 'low', 'high']
@@ -38,11 +35,30 @@ for stock in STOCKS:
     df.loc[:, floatColumns] = df.loc[:, floatColumns].fillna(method='ffill').round(3)
 
     # Create folder to store csv
-    if 1:
-        if stock not in os.listdir(f'data/{MARKET}'):
-            os.mkdir(f'data/{MARKET}/{stock}')
-        # print(df)
-        df = df.reset_index().rename(columns={'index':'datetime'})
-        # df.to_json(f'{FILENAME}.json', orient='records', indent=4)
-        df.to_csv(f'{FILENAME}.csv', index=False)
-        
+    if saveCSV:
+        if stock not in os.listdir(f'data/{market}'):
+            os.mkdir(f'data/{market}/{stock}')
+            df = df.reset_index().rename(columns={'index':'datetime'})
+            # df.to_json(f'{FILENAME}.json', orient='records', indent=4)
+            df.to_csv(f'{FILENAME}.csv', index=False)
+            return df
+        else:
+            if f'{df.index[0].split()[0]}.csv' not in os.listdir(f'data/{market}/{stock}') or END_TIMES[market.lower()] not in df.index[-1]:
+                df = df.reset_index().rename(columns={'index':'datetime'})
+                # df.to_json(f'{FILENAME}.json', orient='records', indent=4)
+                df.to_csv(f'{FILENAME}.csv', index=False)
+                return df
+    print(f'Not saving {FILENAME}.csv..')
+    return df
+
+if __name__ == '__main__':
+    if len(sys.argv) >= 3:
+        MARKET = sys.argv[1]
+        STOCKS = sys.argv[2:]
+    else:
+        print('Please input market as first input and stock as second input..')
+        sys.exit()
+
+    for stock in STOCKS:
+        extractStockPrice(MARKET, stock, True)
+            
