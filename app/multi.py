@@ -39,7 +39,7 @@ for stock in STOCKS:
 
     # Create folder to store csv
     if 1:
-        if stock not in os.listdir('data'):
+        if stock not in os.listdir(f'data/{MARKET}'):
             os.mkdir(f'data/{MARKET}/{stock}')
         # print(df)
         df = df.reset_index().rename(columns={'index':'datetime'})

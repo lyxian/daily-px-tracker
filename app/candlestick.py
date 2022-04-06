@@ -12,7 +12,7 @@ else:
 
 defaultDirectory = f'data/{MARKET}'
 defaultStock = os.listdir(f'{defaultDirectory}')[0]
-defaultFileName = os.listdir(f'{defaultDirectory}/{defaultStock}')[0]
+defaultFileName = os.listdir(f'{defaultDirectory}/{defaultStock}')[-1]
 FILENAME = f'{defaultDirectory}/{defaultStock}/{defaultFileName}' 
 df = pandas.read_csv(FILENAME)
 
