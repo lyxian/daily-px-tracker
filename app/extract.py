@@ -43,11 +43,18 @@ def extractStockPrice(market, stock, saveCSV, interval=INTERVAL, dt_format=DT_FO
             df.to_csv(f'{FILENAME}.csv', index=False)
             return df
         else:
-            if f'{df.index[0].split()[0]}.csv' not in os.listdir(f'data/{market}/{stock}') or END_TIMES[market.lower()] not in df.index[-1]:
+            if f'{df.index[0].split()[0]}.csv' not in os.listdir(f'data/{market}/{stock}'):
                 df = df.reset_index().rename(columns={'index':'datetime'})
                 # df.to_json(f'{FILENAME}.json', orient='records', indent=4)
                 df.to_csv(f'{FILENAME}.csv', index=False)
                 return df
+            else:
+                print(END_TIMES[market.lower()], pandas.read_csv(f'{FILENAME}.csv', index_col=0).index[-1])
+                if END_TIMES[market.lower()] not in pandas.read_csv(f'{FILENAME}.csv', index_col=0).index[-1]:
+                    df = df.reset_index().rename(columns={'index':'datetime'})
+                    # df.to_json(f'{FILENAME}.json', orient='records', indent=4)
+                    df.to_csv(f'{FILENAME}.csv', index=False)
+                    return df
     print(f'Not saving {FILENAME}.csv..')
     return df
 
