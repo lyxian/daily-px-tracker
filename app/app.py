@@ -11,7 +11,7 @@ else:
     sys.exit()
 
 defaultDirectory = f'data/{MARKET}'
-defaultStock = os.listdir(f'{defaultDirectory}')[0]
+defaultStock = sorted(os.listdir(f'{defaultDirectory}'))[0]
 defaultFileName = sorted(os.listdir(f'{defaultDirectory}/{defaultStock}'))[-1]
 FILENAME = f'{defaultDirectory}/{defaultStock}/{defaultFileName}' 
 df = pandas.read_csv(FILENAME)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         Output("date-filter", "options"), Input("stock-filter", "value")
     )
     def updateDateFilter(stock):
-        return [{"label": date, "value": date} for date in os.listdir(f'{defaultDirectory}/{stock}')]
+        return [{"label": date, "value": date} for date in sorted(os.listdir(f'{defaultDirectory}/{stock}'))]
         # return [{"label": date, "value": date} for date in sorted(os.listdir(f'{defaultDirectory}/{stock}'))]
 
     @app.callback(

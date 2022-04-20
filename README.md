@@ -29,7 +29,8 @@ Goals:
   - data management
     - migrate to MongoDB
   - dashboard
-    - volum bar chart
+    > volume bar chart
+    - volume table
 - requirement :
   - .
 
