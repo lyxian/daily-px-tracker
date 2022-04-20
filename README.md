@@ -25,11 +25,11 @@ Goals:
 
 - description :
   - usage
-    - only scrap if market close time is found
+    - save csv only if market close time is found
   - data management
     - migrate to MongoDB
   - dashboard
-    - .
+    - volum bar chart
 - requirement :
   - .
 

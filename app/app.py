@@ -12,7 +12,7 @@ else:
 
 defaultDirectory = f'data/{MARKET}'
 defaultStock = os.listdir(f'{defaultDirectory}')[0]
-defaultFileName = os.listdir(f'{defaultDirectory}/{defaultStock}')[-1]
+defaultFileName = sorted(os.listdir(f'{defaultDirectory}/{defaultStock}'))[-1]
 FILENAME = f'{defaultDirectory}/{defaultStock}/{defaultFileName}' 
 df = pandas.read_csv(FILENAME)
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
                         id="stock-filter",
                         options=[
                             {"label": stock, "value": stock}
-                            for stock in os.listdir(defaultDirectory)
+                            for stock in sorted(os.listdir(defaultDirectory))
                         ],
                         value=defaultStock,
                         clearable=False,
@@ -83,6 +83,7 @@ if __name__ == '__main__':
     )
     def updateDateFilter(stock):
         return [{"label": date, "value": date} for date in os.listdir(f'{defaultDirectory}/{stock}')]
+        # return [{"label": date, "value": date} for date in sorted(os.listdir(f'{defaultDirectory}/{stock}'))]
 
     @app.callback(
         [Output("img_1", "figure"), Output("img_2", "figure")],
@@ -100,7 +101,7 @@ if __name__ == '__main__':
             close=df['close']
         )])
         img_candlestick.update_layout(xaxis_rangeslider_visible=False)
-        img_volume = express.line(df, x='datetime', y='volume')
+        img_volume = express.bar(df, x='datetime', y='volume')
 
         return img_candlestick, img_volume
 
