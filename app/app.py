@@ -22,6 +22,11 @@ df = pandas.read_csv(FILENAME)
 volume_df = df.loc[:, ['datetime', 'volume']]
 volume_df.loc[:, 'datetime'] = df['datetime'].apply(lambda x: x.split()[1])
 
+num = volume_df.shape[0] // INTERVAL
+remainder = volume_df.shape[0] % INTERVAL
+if remainder != 1:
+    num -= 1
+
 if __name__ == '__main__':
 
     def generateHtmlTables(df, interval):
@@ -152,5 +157,28 @@ if __name__ == '__main__':
         img_volume = express.bar(df, x='datetime', y='volume')
 
         return img_candlestick, img_volume
+
+    @app.callback(
+        # [Output("img_1", "figure"), Output("img_2", "figure")],
+        [Output(f"table{i}", "data") for i in range(num)],
+        [Input("stock-filter", "value"), Input("date-filter", "value")]
+    )
+    def updateTable(stock, date):
+        filePath = f'{defaultDirectory}/{stock}/{date}'
+        df = pandas.read_csv(filePath)
+
+        volume_df = df.loc[:, ['datetime', 'volume']]
+        volume_df.loc[:, 'datetime'] = df['datetime'].apply(lambda x: x.split()[1])
+
+        if remainder == 1:
+            return [
+                volume_df.loc[i*INTERVAL:(i+1)*INTERVAL,].to_dict('records') for i in range(num)
+            ]
+        else:
+            return [
+                volume_df.loc[i*INTERVAL:(i+1)*INTERVAL,].to_dict('records') for i in range(num)
+            ] + [
+                volume_df.loc[(num)*INTERVAL:,].to_dict('records')
+            ]
 
     app.run_server(debug=True, host='0.0.0.0', port=8008)
