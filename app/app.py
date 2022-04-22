@@ -26,18 +26,44 @@ if __name__ == '__main__':
 
     def generateHtmlTables(df, interval):
         num = df.shape[0] // interval
-        return [
-            html.Div(children=[
-                dash_table.DataTable(
-                    id=f'table{i}',
-                    style_cell={'textAlign': 'center'},
-                    # style_cell={'overflow': 'hidden', 'textOverflow': 'ellipsis', 'maxWidth': '50px'},
-                    style_data={'whiteSpace': 'normal', 'height': 'auto', 'lineHeight': '15px'},
-                    data=df.loc[i*interval:(i+1)*interval,].to_dict('records'),
-                    columns=[{"name": col, "id": col} for col in df.columns]
-                )
-            ], style={'display': 'inline-block', 'width': f'{100//num}%'}) for i in range(num)
-        ]
+        remainder = df.shape[0] % interval
+        if remainder == 1:
+            return [
+                html.Div(children=[
+                    dash_table.DataTable(
+                        id=f'table{i}',
+                        style_cell={'textAlign': 'center'},
+                        # style_cell={'overflow': 'hidden', 'textOverflow': 'ellipsis', 'maxWidth': '50px'},
+                        style_data={'whiteSpace': 'normal', 'height': 'auto', 'lineHeight': '15px'},
+                        data=df.loc[i*interval:(i+1)*interval,].to_dict('records'),
+                        columns=[{"name": col, "id": col} for col in df.columns]
+                    )
+                ], style={'display': 'inline-block', 'width': f'{100//num}%'}) for i in range(num)
+            ]
+        else:
+            return [
+                html.Div(children=[
+                    dash_table.DataTable(
+                        id=f'table{i}',
+                        style_cell={'textAlign': 'center'},
+                        # style_cell={'overflow': 'hidden', 'textOverflow': 'ellipsis', 'maxWidth': '50px'},
+                        style_data={'whiteSpace': 'normal', 'height': 'auto', 'lineHeight': '15px'},
+                        data=df.loc[i*interval:(i+1)*interval,].to_dict('records'),
+                        columns=[{"name": col, "id": col} for col in df.columns]
+                    )
+                ], style={'display': 'inline-block', 'width': f'{100//(num+1)}%'}) for i in range(num)
+            ] + [
+                html.Div(children=[
+                    dash_table.DataTable(
+                        id=f'table{num}',
+                        style_cell={'textAlign': 'center'},
+                        # style_cell={'overflow': 'hidden', 'textOverflow': 'ellipsis', 'maxWidth': '50px'},
+                        style_data={'whiteSpace': 'normal', 'height': 'auto', 'lineHeight': '15px'},
+                        data=df.loc[(num)*interval:,].to_dict('records'),
+                        columns=[{"name": col, "id": col} for col in df.columns]
+                    )
+                ], style={'display': 'inline-block', 'width': f'{100//(num+1)}%'})
+            ]
 
     app = Dash(__name__)
 
