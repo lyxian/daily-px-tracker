@@ -25,7 +25,7 @@ volume_df.loc[:, 'datetime'] = df['datetime'].apply(lambda x: x.split()[1])
 num = volume_df.shape[0] // INTERVAL
 remainder = volume_df.shape[0] % INTERVAL
 if remainder != 1:
-    num -= 1
+    num += 1
 
 if __name__ == '__main__':
 
@@ -176,9 +176,9 @@ if __name__ == '__main__':
             ]
         else:
             return [
-                volume_df.loc[i*INTERVAL:(i+1)*INTERVAL,].to_dict('records') for i in range(num)
+                volume_df.loc[i*INTERVAL:(i+1)*INTERVAL,].to_dict('records') for i in range(num-1)
             ] + [
-                volume_df.loc[(num)*INTERVAL:,].to_dict('records')
+                volume_df.loc[(num-1)*INTERVAL:,].to_dict('records')
             ]
 
     app.run_server(debug=True, host='0.0.0.0', port=8008)
