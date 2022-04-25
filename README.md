@@ -34,6 +34,14 @@ Goals:
 - requirement :
   - .
 
+# V2.1
+
+- requirement :
+  - data management
+    - migrate to MongoDB
+  - dashboard
+    - volume table
+
 ##Packages (list required packages & run .scripts/python-pip.sh)
 dash
 plotly
