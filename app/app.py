@@ -139,10 +139,12 @@ if __name__ == '__main__':
         # return [{"label": date, "value": date} for date in sorted(os.listdir(f'{defaultDirectory}/{stock}'))]
 
     @app.callback(
-        [Output("img_1", "figure"), Output("img_2", "figure")],
+        [Output("img_1", "figure"), Output("img_2", "figure"), Output("date-filter", "value")],
         [Input("stock-filter", "value"), Input("date-filter", "value")]
     )
     def updatePlot(stock, date):
+        if date not in os.listdir(f'{defaultDirectory}/{stock}'):
+            date = sorted(os.listdir(f'{defaultDirectory}/{stock}'), reverse=True)[0]
         filePath = f'{defaultDirectory}/{stock}/{date}'
         df = pandas.read_csv(filePath)
         
@@ -156,7 +158,7 @@ if __name__ == '__main__':
         img_candlestick.update_layout(xaxis_rangeslider_visible=False)
         img_volume = express.bar(df, x='datetime', y='volume')
 
-        return img_candlestick, img_volume
+        return img_candlestick, img_volume, date
 
     @app.callback(
         # [Output("img_1", "figure"), Output("img_2", "figure")],
@@ -164,6 +166,8 @@ if __name__ == '__main__':
         [Input("stock-filter", "value"), Input("date-filter", "value")]
     )
     def updateTable(stock, date):
+        if date not in os.listdir(f'{defaultDirectory}/{stock}'):
+            date = sorted(os.listdir(f'{defaultDirectory}/{stock}'), reverse=True)[0]
         filePath = f'{defaultDirectory}/{stock}/{date}'
         df = pandas.read_csv(filePath)
 
