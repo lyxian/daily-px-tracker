@@ -17,6 +17,9 @@ def extractStockPrice(market, stock, saveCSV, interval=INTERVAL, dt_format=DT_FO
     data = yfQuoteReader(interval=interval).getDataPoints(stock)
 
     _ = ['open', 'close', 'low', 'high', 'volume']
+    if 'timestamp' not in data['chart']['result'][0].keys():
+        print(f'No response from {market}-{stock}')
+        return 
     timestamp = data['chart']['result'][0]['timestamp']
     datetimes = [pendulum.from_timestamp(i) for i in timestamp]
     indicators = data['chart']['result'][0]['indicators']['quote'][0]

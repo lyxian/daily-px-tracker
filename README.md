@@ -42,6 +42,11 @@ Goals:
   - dashboard
     - volume table
 
+# Fixes
+
+> skip unresponsive stock
+> update dropdown with latest file
+
 ##Packages (list required packages & run .scripts/python-pip.sh)
 dash
 plotly
