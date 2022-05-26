@@ -46,6 +46,7 @@ Goals:
 
 > skip unresponsive stock
 > update dropdown with latest file
+> get missing data
 
 ##Packages (list required packages & run .scripts/python-pip.sh)
 dash
