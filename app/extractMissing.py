@@ -38,10 +38,18 @@ def extractMissingStockPrice(market, stock, missingDate, interval=INTERVAL, dt_f
     for column in _:
         d[column] = indicators[column]
 
-    df = pandas.DataFrame(d, index=datetimes).tz_convert('America/New_York')
+    if market == 'us':
+        df = pandas.DataFrame(d, index=datetimes).tz_convert('America/New_York')
+    else:
+        df = pandas.DataFrame(d, index=datetimes).tz_convert('Asia/Singapore')
     df = df[df.index.map(lambda x: x.strftime(dt_format).split()[0] == missingDate)]
     df.index = df.index.tz_convert('Asia/Singapore').strftime(dt_format)
-    FILENAME = f'data/{market}/{stock}/{df.index[0].split()[0]}'    # FAIL if empty
+
+    try:
+        FILENAME = f'data/{market}/{stock}/{df.index[0].split()[0]}'    # FAIL if empty
+    except:
+        print(f'{market}/{stock} not found, skipping..')
+        return
 
     # Clean Table
     floatColumns = ['open', 'close', 'low', 'high']
